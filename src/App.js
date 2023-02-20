@@ -5,8 +5,7 @@ import First from "./Components/First";
 function App() {
   return (
     <React.Fragment>
-      {/* <First /> */}
-      jki
+      <First />
     </React.Fragment>
   );
 }

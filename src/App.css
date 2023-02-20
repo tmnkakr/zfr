@@ -1,8 +1,14 @@
 .App {
   text-align: center;
 }
+
 .left {
   text-align: left;
+}
+
+
+.leftside {
+  float: left;
 }
 
 .App-logo {
@@ -35,6 +41,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
