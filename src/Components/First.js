@@ -1,7 +1,7 @@
 import React from "react";
 import "../App.css";
 import { useState } from "react";
-import { Button, Table } from "react-bootstrap";
+import { Button, Tab, Table } from "react-bootstrap";
 import Secound from "./Secound";
 
 const First = () => {
@@ -194,13 +194,25 @@ const First = () => {
 
   const [baseVal, BaseVal] = useState(0);
   const [baseValIndex, BaseValIndex] = useState(0);
+  const [baseValSecIndex, BaseValSecIndex] = useState(0);
+
+  const [baseValSec, BaseValSec] = useState(0);
 
   const [upperLimit, UpperLimit] = useState(0);
   const [downLimit, DownLimit] = useState(0);
 
   const [val1, Val1] = useState(0);
-  const [noTimes, NoTimes] = useState(0);
+  const [firstDiv, FirstDiv] = useState(1.9);
+  const [secoundDiv, SecoundDiv] = useState(2);
+
+  const [noTimes, NoTimes] = useState(1);
   const [lastAns, LastAns] = useState(0);
+  const [lastDivide, LastDivide] = useState(1);
+
+  const [lastAnsTbl, LastAnsTbl] = useState([]);
+  const [lastAnsTblIndx, LastAnsTblIndx] = useState(5);
+
+  const [xTable, setXTable] = useState([]);
 
   function MulDiv(nm) {
     for (let i = 0; i < div1 - 1; i++) {
@@ -1817,6 +1829,8 @@ const First = () => {
     Tb1_10(getPosDiffQ() * 0.1);
     let firstVal = 0,
       baseIndex = 0;
+    let secVal = 0,
+      secIndex = 0;
 
     if (curr > getPosDiffQ()) {
       alert(
@@ -1858,6 +1872,48 @@ const First = () => {
     BaseVal((firstVal / 10).toFixed(2));
     BaseValIndex(baseIndex);
 
+    if (curr > getPosDiffBP()) {
+      alert(
+        "Got a Value higher than Upper Limit of Difference Table",
+        curr,
+        getPosDiffBP()
+      );
+    } else if (curr < getPosDiffBP() && curr >= getPosDiffBP() * 0.9) {
+      secVal = getPosDiffBP() * 0.9;
+      secIndex = 2;
+    } else if (curr < getPosDiffBP() * 0.9 && curr >= getPosDiffBP() * 0.8) {
+      secVal = getPosDiffBP() * 0.8;
+      secIndex = 3;
+    } else if (curr < getPosDiffBP() * 0.8 && curr >= getPosDiffBP() * 0.7) {
+      secVal = getPosDiffBP() * 7;
+      secIndex = 4;
+    } else if (curr < getPosDiffBP() * 0.7 && curr >= getPosDiffBP() * 0.6) {
+      secVal = getPosDiffBP() * 0.6;
+      secIndex = 5;
+    } else if (curr < getPosDiffBP() * 0.6 && curr >= getPosDiffBP() * 0.5) {
+      secVal = getPosDiffBP() * 0.5;
+      secIndex = 6;
+    } else if (curr < getPosDiffBP() * 0.5 && curr >= getPosDiffBP() * 0.4) {
+      secVal = getPosDiffBP() * 0.4;
+      secIndex = 7;
+    } else if (curr < getPosDiffBP() * 0.4 && curr >= getPosDiffBP() * 0.3) {
+      secVal = getPosDiffBP() * 0.3;
+      secIndex = 8;
+    } else if (curr < getPosDiffBP() * 0.3 && curr >= getPosDiffBP() * 0.2) {
+      secVal = getPosDiffBP() * 0.2;
+      secIndex = 9;
+    } else if (curr < getPosDiffBP() * 0.2 && curr >= getPosDiffBP() * 0.1) {
+      secVal = getPosDiffBP() * 0.1;
+      secIndex = 10;
+    }
+    if (firstVal === 0 || baseIndex === 0) {
+      alert("got Forst Value as zero");
+    }
+    BaseValSec(secVal.toFixed(2));
+    BaseValSecIndex(secIndex);
+
+    // BaseValIndex2();
+
     Tb2_1(getPosDiffBP());
     Tb2_2(getPosDiffBP() * 0.9);
     Tb2_3(getPosDiffBP() * 0.8);
@@ -1870,7 +1926,7 @@ const First = () => {
     Tb2_10(getPosDiffBP() * 0.1);
 
     let upperIndex = parseInt(baseIndex) - parseInt(inp1);
-    let downIndex = parseInt(baseIndex) + parseInt(inp2);
+    let downIndex = parseInt(secIndex) + parseInt(inp2);
 
     if (upperIndex == 1) UpperLimit(getPosDiffQ());
     else if (upperIndex == 2) UpperLimit(getPosDiffQ() * 0.9);
@@ -1902,7 +1958,7 @@ const First = () => {
     else if (downIndex == 8) DownLimit(getPosDiffBP() * 0.3);
     else if (downIndex == 9) DownLimit(getPosDiffBP() * 0.2);
     else if (downIndex == 10) DownLimit(getPosDiffBP() * 0.1);
-    else
+    else {
       alert(
         "Got DownIndex out of Range 1 to 10, Please Check!!" +
           downIndex +
@@ -1911,12 +1967,62 @@ const First = () => {
           " " +
           inp2
       );
+      alert(parseInt(baseValSec) + " " + parseInt(inp2));
+    }
 
-    let divide1 = Math.abs(upperLimit - downLimit) / 1.9;
-    let divide2 = Math.abs(upperLimit - downLimit) / 3.8;
+    let divide1 = Math.abs(upperLimit - downLimit) / firstDiv;
+    let divide2 =
+      Math.abs(upperLimit - downLimit) /
+      firstDiv /
+      Math.pow(secoundDiv, noTimes);
 
     Val1(divide1);
-    LastAns(Math.abs(upperLimit - downLimit) / 1.9 / Math.pow(2, noTimes));
+    LastAns(
+      Math.abs(upperLimit - downLimit) /
+        firstDiv /
+        Math.pow(secoundDiv, noTimes) /
+        lastDivide
+    );
+    if (lastAns != 0) setLastAnsTable();
+  }
+
+  function setLastAnsTable() {
+    var arTimes = [];
+
+    for (let i = 0; i < noTimes; i++) {
+      var arIn = [];
+      for (let j = 0; j < 35 / (i + 1); j++) {
+        arIn.push(downLimit + j * getLastAns() * lastDivide * Math.pow(2, i));
+      }
+      arTimes.push(arIn);
+    }
+
+    console.log(arTimes);
+    setXTable(arTimes);
+
+    // for (let i = 0; i < lastAnsTblIndx; i++) {
+    //   if (i == 0) {
+    //     ar.push({
+    //       first: getPosDiffQ() * (1 - i / 10),
+    //       secound: getPosDiffQ() * (1 - i / 10) - lastAns,
+    //     });
+    //   } else {
+    //     ar.push({
+    //       first: getPosDiffQ() * (1 - i / 10),
+    //       secound: getPosDiffQ() * (1 - i / 10) - lastAns * 2,
+    //     });
+    //   }
+    // }
+    // LastAnsTbl(ar);
+  }
+
+  function getLastAns() {
+    return (
+      Math.abs(upperLimit - downLimit) /
+      firstDiv /
+      Math.pow(secoundDiv, noTimes) /
+      lastDivide
+    );
   }
 
   return (
@@ -2690,19 +2796,62 @@ const First = () => {
         <br />
         Base : {baseVal}
         <br />
+        Base Sec : {baseValSec}
+        <hr />
+        <br />
         BaseValIndex : {baseValIndex}
         <br />
-        DownLimitBP : {downLimit}
+        BaseValIndex2 : {baseValSecIndex}
+        <br />
       </div>
       Upper Limit : {upperLimit + " "}
       Lower Limit : {downLimit}
       <br />
-      {val1}
+      Diff of UpperLimit and LowerLimit : {upperLimit - downLimit}
       <br />
+      First Divide One (1.9) :
+      <input type="number" value={firstDiv} onChange={(v) => FirstDiv(v)} />
+      <br />
+      After Div One :{val1}
+      <br />
+      Divide Secound :
+      <input value={secoundDiv} onChange={(v) => SecoundDiv(v)} />
+      <br />
+      Pow of Secound Div:
       <input value={noTimes} onChange={(v) => NoTimes(v.target.value)} />
       <br />
+      After Secound Div :
+      {Math.abs(upperLimit - downLimit) / firstDiv / Math.pow(2, noTimes)}
+      <br />
+      Last no to Divide from :
+      <input value={lastDivide} onChange={(v) => LastDivide(v.target.value)} />
+      <br />
       Last Ans : {lastAns}
-      <div></div>
+      <br />
+      Last Ans Table Index :
+      <input
+        value={lastAnsTblIndx}
+        onChange={(v) => LastAnsTblIndx(v.target.value)}
+      />
+      <div>
+        {xTable.map((elm, elIn) => {
+          return (
+            <div style={{ float: "left" }}>
+              <Table bordered="true" key={elIn}>
+                <tbody>
+                  {elm.map((vIn, vIx) => {
+                    return (
+                      <tr key={vIx}>
+                        <td>{vIn}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
